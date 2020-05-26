@@ -10,13 +10,15 @@ import org.springframework.web.client.RestTemplate;
 
 import com.mlatta.brewclient.model.BeerDto;
 
+import lombok.Setter;
+
 @Component
-@ConfigurationProperties(value = "sfg.brewery", ignoreUnknownFields = false)
+@ConfigurationProperties(prefix = "sfg.brewery", ignoreUnknownFields = false)
 public class BreweryClient { 
 
-	public final String BEER_PATH_V1 = "/api/v1/beer/";
+	public static final String BEER_PATH_V1 = "/api/v1/beer/";
 	
-	private String apiHost;
+	@Setter	private String apiHost;
 	
 	private final RestTemplate restTemplate;
 	
@@ -24,12 +26,8 @@ public class BreweryClient {
 		this.restTemplate = restTemplateBuilder.build();
 	}
 
-	public void setApiHost(String apiHost) {
-		this.apiHost = apiHost;
-	}
-	
-	public BeerDto getBeerById(UUID beerId) {
-		return restTemplate.getForObject(apiHost + BEER_PATH_V1 + beerId.toString(), BeerDto.class);
+	public BeerDto getBeerById(UUID uuid) {
+		return restTemplate.getForObject(apiHost + BEER_PATH_V1 + uuid.toString(), BeerDto.class);
 	}
 	
 	public URI saveNewBeer(BeerDto beerDto) {
@@ -38,5 +36,9 @@ public class BreweryClient {
 	
 	public void updateBeer(UUID uuid, BeerDto beerDto) {
 		restTemplate.put(apiHost + BEER_PATH_V1 + uuid.toString(), beerDto);
+	}
+	
+	public void deleteBeer(UUID uuid) {
+		restTemplate.delete(apiHost + BEER_PATH_V1 + uuid.toString());
 	}
 }
