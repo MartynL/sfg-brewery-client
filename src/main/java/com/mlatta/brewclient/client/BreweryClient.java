@@ -1,5 +1,6 @@
 package com.mlatta.brewclient.client;
 
+import java.net.URI;
 import java.util.UUID;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -29,5 +30,9 @@ public class BreweryClient {
 	
 	public BeerDto getBeerById(UUID beerId) {
 		return restTemplate.getForObject(apiHost + BEER_PATH_V1 + beerId.toString(), BeerDto.class);
+	}
+	
+	public URI saveNewBeer(BeerDto beerDto) {
+		return restTemplate.postForLocation(apiHost + BEER_PATH_V1, beerDto);
 	}
 }

@@ -2,6 +2,7 @@ package com.mlatta.brewclient.client;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.net.URI;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,17 @@ class BreweryClientTest {
 	void testGetBeerById() {
 		BeerDto beerDto = client.getBeerById(UUID.randomUUID());
 		assertNotNull(beerDto);
+	}
+	
+	@Test
+	void testSaveNewBeer() {
+		BeerDto beerDto = BeerDto.builder().beerName("New Beer").build();
+		
+		URI uri = client.saveNewBeer(beerDto);
+		
+		assertNotNull(uri);
+		
+		System.out.println(uri);
 	}
 
 }
