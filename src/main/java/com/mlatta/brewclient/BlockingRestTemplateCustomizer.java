@@ -11,8 +11,15 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import com.mlatta.brewclient.model.properties.RestTemplateConfig;
+
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class BlockingRestTemplateCustomizer implements RestTemplateCustomizer {
+
+	private final RestTemplateConfig restTemplateConfig;
 
 	@Override
 	public void customize(RestTemplate restTemplate) {
@@ -23,13 +30,15 @@ public class BlockingRestTemplateCustomizer implements RestTemplateCustomizer {
 	public ClientHttpRequestFactory clientHttpRequestFactory() {
 		
 		PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
-		connectionManager.setMaxTotal(100);
-		connectionManager.setDefaultMaxPerRoute(20);
+		
+		connectionManager.setMaxTotal(restTemplateConfig.getMaxTotal());
+		
+		connectionManager.setDefaultMaxPerRoute(restTemplateConfig.getMaxPerRoute());
 		
 		RequestConfig requestConfig = RequestConfig
 										.custom()
-										.setConnectionRequestTimeout(3000)
-										.setSocketTimeout(3000)
+										.setConnectionRequestTimeout(restTemplateConfig.getConnectionRequestTimeout())
+										.setSocketTimeout(restTemplateConfig.getSocketTimeout())
 										.build();
 		
 		CloseableHttpClient httpClient = HttpClients
